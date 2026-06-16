@@ -1,27 +1,57 @@
-# Backend Proyecto Saas catalog - Josselyn Contreras
+# Backend Proyecto peliculas y series - Jean Paul
 
 ## Instalación
 
-1. Clona el repositorio: 
-git clone <repository_url>
+1. Clona el repositorio:
+
+   ```bash
+   git clone <repository_url>
+   ```
 
 2. Navega al directorio del proyecto:
 
-  cd backend-proyecto-saas-catalog-josselyn-contreras
+   ```bash
+   cd backend-proyecto-peliculas-series-jean-paul
+   ```
 
-3. Cambiar a la rama dev:
-git switch dev
+3. Cambiar a la rama `dev`:
+
+   ```bash
+   git switch dev
+   ```
 
 4. Instala las dependencias:
 
-npm install
+   ```bash
+   npm install
+   ```
 
-5. Crea un archivo .env basado en el archivo .env-example y configura tus variables de entorno:
-cp .env-example .env
-Luego, edita el archivo .env para agregar tu configuración personalizada, como el puerto y la URI de MongoDB.
+5. Crea un archivo `.env` basado en el archivo `.env-example` y configura tus variables de entorno:
+
+   ```bash
+   cp .env-example .env
+   ```
+
+   Luego, edita el archivo `.env` para agregar tu configuración personalizada, como el puerto y la URI de MongoDB.
 
 6. Inicia el servidor:
-npm start
-Para desarrollo con recarga automática, puedes usar:
-npm run dev
+   ```bash
+   npm start
+   ```
+   Para desarrollo con recarga automática, puedes usar:
+   ```bash
+   npm run dev
+   ```
+
+## Seeders
+
+Si deseas poblar la base de datos con datos de ejemplo, puedes ejecutar el seeder:
+
+```bash
+npm run seed
+```
+
+## Uso
+
+Una vez que el servidor esté en funcionamiento, puedes acceder a la API a través de `http://localhost:<PORT>/api`, donde `<PORT>` es el puerto que configuraste en tu archivo `.env`.
 
