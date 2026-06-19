@@ -38,6 +38,31 @@ Si deseas poblar la base de datos con datos de ejemplo, puedes ejecutar el seede
 ```bash
 node src/seeders/tool.seeder.js
 ```
+## Testing
+
+El proyecto incluye tests automatizados con `mocha`, `chai` y `supertest`, que cubren la ruta raíz, el registro/login de usuarios y el CRUD de herramientas.
+
+Los tests usan una base de datos separada de la de producción, para no afectar los datos reales. Antes de correrlos, crea un archivo `.env.test` en la raíz del proyecto con el mismo formato que `.env-example`, pero apuntando a una base de datos distinta (por ejemplo, cambiando el nombre de la base en la URI de `catalog` a `catalog-test`):
+
+```bash
+PORT=3001
+MONGODB_URI=mongodb+srv://<usuario>:<password>@<cluster>/catalog-test?appName=Cluster0
+JWT_SECRET=<tu_secreto>
+```
+
+Para ejecutar los tests:
+```bash
+npm test
+```
+
+Los tests verifican:
+- Que la ruta raíz `/` responda con un mensaje de bienvenida
+- Que el registro de usuarios funcione correctamente y rechace correos duplicados
+- Que el login devuelva un token JWT válido
+- Que el listado de herramientas (`GET /api/tools`) responda con un array
+- Que un usuario administrador pueda crear una herramienta correctamente
+
+
 
 ## Uso
 
@@ -157,3 +182,19 @@ body:
 ```
 
 response: status 200 con el token JWT y los datos del usuario.
+
+
+## Estructura del proyecto
+
+```
+src/
+├── config/        # Configuración de conexión a MongoDB
+├── controllers/   # Lógica de negocio (auth, tools)
+├── middlewares/    # Autenticación JWT y verificación de rol admin
+├── models/        # Esquemas de Mongoose (Tool, User)
+├── routes/        # Definición de endpoints
+└── seeders/       # Script para poblar la base de datos
+test/              # Tests automatizados (mocha + chai + supertest)
+app.js             # Configuración de Express (sin levantar el servidor)
+index.js           # Punto de entrada que levanta el servidor
+```
