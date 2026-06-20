@@ -32,7 +32,13 @@ export const createTool = async (req, res) => {
 
 export const getTools = async (req, res) => {
   try {
-    const tools = await Tool.find();
+    const { search } = req.query;
+
+    const filter = search
+      ? { name: { $regex: search, $options: "i" } }
+      : {};
+
+    const tools = await Tool.find(filter);
 
     res.json(tools);
   } catch (error) {
