@@ -17,13 +17,11 @@ const toolSchema = new mongoose.Schema(
       type: String,
       required: true,
       trim: true,
-      // enum: ["Productividad", "CRM", "Analytics", "Marketing", "DevOps", "Diseño", "Pagos"],
     },
     pricing: {
       type: String,
       required: true,
       trim: true,
-      // enum: ["Gratis", "Freemium", "De pago"],
     },
     website: {
       type: String,

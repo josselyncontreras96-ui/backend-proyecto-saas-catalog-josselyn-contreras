@@ -1,200 +1,531 @@
-# Backend Proyecto SaaS Catalog - Josselyn Contreras
+# Stackly API
 
-## Instalación
+API REST desarrollada con Node.js, Express y MongoDB para gestionar un catálogo de herramientas SaaS.
 
-1. Clona el repositorio:
-```bash
-   git clone 
-```
-2. Navega al directorio del proyecto:
-```bash
-   cd backend-proyecto-saas-catalog-josselyn-contreras
-```
-3. Cambiar a la rama `dev`:
-```bash
-   git switch dev
-```
-4. Instala las dependencias:
-```bash
-   npm install
-```
-5. Crea un archivo `.env` basado en el archivo `.env-example` y configura tus variables de entorno:
-```bash
-   cp .env-example .env
-```
-   Luego, edita el archivo `.env` para agregar tu configuración personalizada, como el puerto, la URI de MongoDB y el JWT_SECRET.
-6. Inicia el servidor:
-```bash
-   npm start
-```
-   Para desarrollo con recarga automática, puedes usar:
-```bash
-   npm run dev
-```
+---
 
-## Seeders
+# Características
 
-Si deseas poblar la base de datos con datos de ejemplo, puedes ejecutar el seeder:
-```bash
-node src/seeders/tool.seeder.js
-```
-## Testing
+- CRUD completo de herramientas
+- Búsqueda por nombre mediante query param `?search=`
+- Registro de usuarios
+- Inicio de sesión con JWT
+- Contraseñas encriptadas con bcrypt
+- Autenticación mediante Bearer Token
+- Middleware de administrador
+- MongoDB Atlas
+- Tests con Mocha, Chai y Supertest
 
-El proyecto incluye tests automatizados con `mocha`, `chai` y `supertest`, que cubren la ruta raíz, el registro/login de usuarios y el CRUD de herramientas.
+---
 
-Los tests usan una base de datos separada de la de producción, para no afectar los datos reales. Antes de correrlos, crea un archivo `.env.test` en la raíz del proyecto con el mismo formato que `.env-example`, pero apuntando a una base de datos distinta (por ejemplo, cambiando el nombre de la base en la URI de `catalog` a `catalog-test`):
+# 🛠 Tecnologías utilizadas
+
+- Node.js
+- Express
+- MongoDB Atlas
+- Mongoose
+- JWT
+- bcryptjs
+- dotenv
+- cors
+- Mocha
+- Chai
+- Supertest
+
+---
+
+# Instalación
+
+Clonar el repositorio:
 
 ```bash
-PORT=3001
-MONGODB_URI=mongodb+srv://<usuario>:<password>@<cluster>/catalog-test?appName=Cluster0
-JWT_SECRET=<tu_secreto>
+git clone 
 ```
 
-Para ejecutar los tests:
+Ingresar al proyecto:
+
+```bash
+cd backend-proyecto-saas-catalog-josselyn-contreras
+```
+
+Instalar dependencias:
+
+```bash
+npm install
+```
+
+---
+
+# Variables de entorno
+
+Crear un archivo `.env` utilizando como referencia `.env.example`.
+
+## .env.example
+
+```env
+PORT=
+MONGODB_URI=
+JWT_SECRET=
+```
+
+## Ejemplo
+
+```env
+PORT=3000
+MONGODB_URI=mongodb+srv://usuario:password@cluster.mongodb.net/catalog
+JWT_SECRET=mi-clave-secreta
+```
+
+Para correr los tests se utiliza un archivo `.env.test` con una base de datos separada (`catalog-test`).
+
+---
+
+# Ejecutar en desarrollo
+
+```bash
+npm run dev
+```
+
+---
+
+# Ejecutar en producción
+
+```bash
+npm start
+```
+
+---
+
+# Ejecutar tests
+
 ```bash
 npm test
 ```
 
-Los tests verifican:
-- Que la ruta raíz `/` responda con un mensaje de bienvenida
-- Que el registro de usuarios funcione correctamente y rechace correos duplicados
-- Que el login devuelva un token JWT válido
-- Que el listado de herramientas (`GET /api/tools`) responda con un array
-- Que un usuario administrador pueda crear una herramienta correctamente
+5 tests pasando (Mocha + Chai + Supertest).
 
+---
 
+# Endpoints
 
-## Uso
+---
 
-Una vez que el servidor esté en funcionamiento, puedes acceder a la API a través de `http://localhost:<PORT>/api`, donde `<PORT>` es el puerto que configuraste en tu archivo `.env`.
+## Home
 
-### Obtener todas las herramientas
+### GET /
 
-método GET a `/api/tools` para obtener una lista de todas las herramientas.
+Devuelve un mensaje de bienvenida.
 
-response:
+### Respuesta Exitosa
+
+#### Status: 200 OK
+
+```json
+{
+  "message": "Bienvenidos a la API de Stackly"
+}
+```
+
+---
+
+# Autenticación
+
+## Registro
+
+### POST /api/auth/register
+
+Registra un nuevo usuario.
+
+### Body
+
+```json
+{
+  "name": "Juan Pérez",
+  "email": "juan@example.com",
+  "password": "123456"
+}
+```
+
+### Respuesta Exitosa
+
+#### Status: 201 Created
+
+```json
+{
+  "message": "Usuario registrado correctamente"
+}
+```
+
+### Posibles Errores
+
+#### Status: 400 Bad Request
+
+```json
+{
+  "message": "Todos los campos son obligatorios"
+}
+```
+
+#### Status: 400 Bad Request
+
+```json
+{
+  "message": "El usuario ya existe"
+}
+```
+
+#### Status: 500 Internal Server Error
+
+```json
+{
+  "message": "Error interno del servidor"
+}
+```
+
+---
+
+## Login
+
+### POST /api/auth/login
+
+Inicia sesión y devuelve un token JWT.
+
+### Body
+
+```json
+{
+  "email": "juan@example.com",
+  "password": "123456"
+}
+```
+
+### Respuesta Exitosa
+
+#### Status: 200 OK
+
+```json
+{
+  "token": "jwt-token",
+  "user": {
+    "_id": "...",
+    "name": "Juan Pérez",
+    "email": "juan@example.com"
+  }
+}
+```
+
+### Posibles Errores
+
+#### Status: 400 Bad Request
+
+```json
+{
+  "message": "Todos los campos son obligatorios"
+}
+```
+
+#### Status: 401 Unauthorized
+
+```json
+{
+  "message": "Credenciales inválidas"
+}
+```
+
+#### Status: 500 Internal Server Error
+
+```json
+{
+  "message": "Error interno del servidor"
+}
+```
+
+---
+
+# Herramientas
+
+## Obtener todas las herramientas
+
+### GET /api/tools
+
+Devuelve todas las herramientas. Soporta búsqueda con el query param `search`.
+
+### Ejemplo
+
+```txt
+GET /api/tools?search=notion
+```
+
+### Respuesta Exitosa
+
+#### Status: 200 OK
+
 ```json
 [
   {
-    "_id": "6a3...",
+    "_id": "...",
     "name": "Notion",
     "description": "Docs, wikis y gestión de proyectos en un solo workspace colaborativo.",
     "category": "Productividad",
     "pricing": "Freemium",
     "website": "https://notion.so",
-    "image": "https://picsum.photos/300/400?random=1",
+    "image": "https://...",
     "rating": 4.8,
-    "featured": true,
-    "createdAt": "2026-06-17T10:51:32.082Z",
-    "updatedAt": "2026-06-17T10:51:32.082Z"
+    "featured": true
   }
 ]
 ```
 
-### Obtener una herramienta por ID
+#### Status: 500 Internal Server Error
 
-método GET a `/api/tools/:id` para obtener los detalles de una herramienta específica por su ID.
-
-response:
-status: 200
 ```json
 {
-  "_id": "6a3...",
-  "name": "Notion",
-  "description": "Docs, wikis y gestión de proyectos en un solo workspace colaborativo.",
-  "category": "Productividad",
-  "pricing": "Freemium",
-  "website": "https://notion.so",
-  "image": "https://picsum.photos/300/400?random=1",
-  "rating": 4.8,
-  "featured": true,
-  "createdAt": "2026-06-17T10:51:32.082Z",
-  "updatedAt": "2026-06-17T10:51:32.082Z"
+  "message": "Error interno del servidor"
 }
 ```
 
-status: 404
+---
+
+## Obtener herramienta por ID
+
+### GET /api/tools/:id
+
+Devuelve una herramienta por su ID.
+
+### Respuesta Exitosa
+
+#### Status: 200 OK
+
+```json
+{
+  "_id": "...",
+  "name": "Notion",
+  "category": "Productividad",
+  "pricing": "Freemium",
+  "image": "https://..."
+}
+```
+
+### Posibles Errores
+
+#### Status: 404 Not Found
+
 ```json
 {
   "message": "Herramienta no encontrada"
 }
 ```
 
-### Crear una herramienta (requiere autenticación de admin)
+#### Status: 500 Internal Server Error
 
-método POST a `/api/tools` con header `Authorization: Bearer <token>`.
-
-body:
 ```json
 {
-  "name": "Trello",
+  "message": "Error interno del servidor"
+}
+```
+
+---
+
+## Crear herramienta
+
+### POST /api/tools
+
+Requiere autenticación de administrador.
+
+### Headers
+
+```txt
+Authorization: Bearer TOKEN
+```
+
+### Body
+
+```json
+{
+  "name": "Notion",
+  "description": "Docs, wikis y gestión de proyectos en un solo workspace colaborativo.",
   "category": "Productividad",
-  "description": "Gestión de proyectos con tableros Kanban.",
   "pricing": "Freemium",
-  "website": "https://trello.com",
-  "image": "https://picsum.photos/300/400?random=10",
-  "rating": 4.5
+  "website": "https://notion.so",
+  "image": "https://...",
+  "rating": 4.8,
+  "featured": true
 }
 ```
 
-response: status 201 con la herramienta creada.
+### Respuesta Exitosa
 
-### Actualizar una herramienta (requiere autenticación de admin)
+#### Status: 201 Created
 
-método PUT a `/api/tools/:id` con header `Authorization: Bearer <token>` y el body con los campos a actualizar.
-
-### Eliminar una herramienta (requiere autenticación de admin)
-
-método DELETE a `/api/tools/:id` con header `Authorization: Bearer <token>`.
-
-response:
 ```json
 {
-  "message": "Herramienta borrada"
+  "_id": "...",
+  "name": "Notion",
+  "category": "Productividad"
 }
 ```
 
-### Registro de usuario
+### Posibles Errores
 
-método POST a `/api/auth/register`.
+#### Status: 401 Unauthorized
 
-body:
 ```json
 {
-  "name": "Josselyn Contreras",
-  "email": "josselyn@test.com",
-  "password": "123456"
+  "message": "No autorizado"
 }
 ```
 
-response: status 201 con los datos del usuario creado.
+#### Status: 400 Bad Request
 
-### Login de usuario
-
-método POST a `/api/auth/login`.
-
-body:
 ```json
 {
-  "email": "josselyn@test.com",
-  "password": "123456"
+  "message": "Datos inválidos"
 }
 ```
 
-response: status 200 con el token JWT y los datos del usuario.
+#### Status: 500 Internal Server Error
 
-
-## Estructura del proyecto
-
+```json
+{
+  "message": "Error interno del servidor"
+}
 ```
+
+---
+
+## Actualizar herramienta
+
+### PUT /api/tools/:id
+
+Requiere autenticación de administrador.
+
+### Headers
+
+```txt
+Authorization: Bearer TOKEN
+```
+
+### Respuesta Exitosa
+
+#### Status: 200 OK
+
+```json
+{
+  "_id": "...",
+  "name": "Notion 2",
+  "category": "Productividad"
+}
+```
+
+### Posibles Errores
+
+#### Status: 401 Unauthorized
+
+```json
+{
+  "message": "No autorizado"
+}
+```
+
+#### Status: 404 Not Found
+
+```json
+{
+  "message": "Herramienta no encontrada"
+}
+```
+
+#### Status: 500 Internal Server Error
+
+```json
+{
+  "message": "Error interno del servidor"
+}
+```
+
+---
+
+## Eliminar herramienta
+
+### DELETE /api/tools/:id
+
+Requiere autenticación de administrador.
+
+### Headers
+
+```txt
+Authorization: Bearer TOKEN
+```
+
+### Respuesta Exitosa
+
+#### Status: 200 OK
+
+```json
+{
+  "message": "Herramienta eliminada correctamente"
+}
+```
+
+### Posibles Errores
+
+#### Status: 401 Unauthorized
+
+```json
+{
+  "message": "No autorizado"
+}
+```
+
+#### Status: 404 Not Found
+
+```json
+{
+  "message": "Herramienta no encontrada"
+}
+```
+
+#### Status: 500 Internal Server Error
+
+```json
+{
+  "message": "Error interno del servidor"
+}
+```
+
+---
+
+# Deploy
+
+Backend desplegado en Render.
+
+```txt
+https://backend-proyecto-saas-catalog-josselyn.onrender.com
+```
+
+---
+
+# Estructura del proyecto
+
+```txt
 src/
-├── config/        # Configuración de conexión a MongoDB
-├── controllers/   # Lógica de negocio (auth, tools)
-├── middlewares/    # Autenticación JWT y verificación de rol admin
-├── models/        # Esquemas de Mongoose (Tool, User)
-├── routes/        # Definición de endpoints
-└── seeders/       # Script para poblar la base de datos
-test/              # Tests automatizados (mocha + chai + supertest)
-app.js             # Configuración de Express (sin levantar el servidor)
-index.js           # Punto de entrada que levanta el servidor
+│
+├── config/
+├── controllers/
+├── middlewares/
+├── models/
+├── routes/
+├── test/
+│
+└── app.js
+
+index.js
 ```
+
+---
+
+# Autor
+
+Proyecto desarrollado como práctica del curso Full Stack de Neoland.
+
+Autora: Josselyn Contreras
